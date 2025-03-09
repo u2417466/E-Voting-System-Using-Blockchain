@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>Vote for Your Preferred Party</h3>
+    <form action="/submit" method="post" class="vote-form">
+        <label>Select Political Party:</label>
+        <select name="party" required>
+            <option value="">-- Select Party --</option>
+            {% for party in political_parties %}
+            <option value="{{ party }}">{{ party }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        
+        <label>Enter Voter ID:</label>
+        <input type="text" name="voter_id" id="voter_id" placeholder="e.g., VOID001" required>
+        <br><br>
+        
+        <input type="submit" value="Submit Vote">
+    </form>
+
+    <hr>
+
+    <h3>Voting Results</h3>
+    <table class="vote-table">
+        <tr>
+            <th>Voter ID</th>
+            <th>Political Party</th>
+            <th>Voted Time</th>
+        </tr>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.voter_id }}</td>
+            <td>{{ post.party }}</td>
+            <td>{{ readable_time(post.timestamp) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+
+    <h3>Summary</h3>
+    <table class="summary-table">
+        <tr>
+            <th>Political Party</th>
+            <th>Total Votes</th>
+        </tr>
+        {% for party, count in vote_summary.items() %}
+        <tr>
+            <td>{{ party }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <hr>
+
+    <h3>Actions</h3>
+    <div class="action-buttons">
+        <a href="http://127.0.0.1:8000/mine" target="_blank"><button>Mine Transactions</button></a>
+        <a href="http://127.0.0.1:5000"><button>Resync Data</button></a>
+        <a href="http://127.0.0.1:8000/chain" target="_blank"><button>View Blockchain</button></a>
+    </div>
+
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Header */
+        h2 {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+        }
+
+        /* Container */
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px 0px #888888;
+            margin-top: 20px;
+        }
+
+        /* Form Styling */
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            text-align: left;
+        }
+
+        input,
+        select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        /* Button Styling */
+        button,
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button:hover,
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styling */
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #007BFF;
+            color: white;
+        }
+
+        td {
+            background: white;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            margin-top: 20px;
+        }
+
+        .action-buttons a {
+            text-decoration: none;
+            margin: 5px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let voteForm = document.querySelector("form");
+
+            voteForm.addEventListener("submit", function (event) {
+                let party = document.querySelector("select[name='party']").value;
+                let voterId = document.querySelector("input[name='voter_id']").value;
+
+                if (party === "" || voterId === "") {
+                    alert("Please select a party and enter a valid voter ID.");
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+        });
+    </script>
+{% endblock %}
